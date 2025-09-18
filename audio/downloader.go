@@ -6,6 +6,7 @@ import (
 	"os"
 	"os/exec"
 	"strings"
+	"github.com/Setho0o/exho/audio/data"
 )
 
 //go:embed ytdlp.sh
@@ -38,6 +39,7 @@ func Download(s SongDownload) {
 		fmt.Println(e)
 	}
 	fmt.Println(string(b))
+	data.MoveJson() // move json after every download
 }
 
 // will probably remove wav since i cant embed the thumnail with ydlp
