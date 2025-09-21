@@ -24,7 +24,7 @@ yt-dlp \
   --parse-metadata "video::(?P<formats>)" \
   --replace-in-metadata "title,uploader" "[ -]" "_" \
   -o "%(title)s"\
-  --embed-thumbnail \
+  --write-thumbnail --convert-thumbnails png \
   --embed-metadata --merge-output-format mkv --write-info-json \
   -x --audio-format $1 $4 $2 
 

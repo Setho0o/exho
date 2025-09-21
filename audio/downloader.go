@@ -21,7 +21,7 @@ type SongDownload struct {
 
 const SampleLifeLivingYou string = "https://www.youtube.com/watch?v=SwW5QGEBHDo&list=RDSwW5QGEBHDo"
 const SampleSwimmingPools string = "https://www.youtube.com/watch?v=B5YNiCfWC3A&list=RDB5YNiCfWC3A"
-const SampleEverLong string = "https://www.youtube.com/watch?v=eBG7P-K-r1Y&list=RDeBG7P-K-r1Y"
+const SampleEverLong string = "https://www.youtube.com/watch?v=eBG7P-K-r1Y&list=RDeBG7P-K-r1Y&start_radio=1"
 
 func Download(s SongDownload) {
 	var no_playlist string
@@ -29,43 +29,24 @@ func Download(s SongDownload) {
 		no_playlist = "--no-playlist"
 	}
 
-	c := exec.Command("bash", "/dev/stdin", s.format, s.url, s.dir, no_playlist)
+	c := exec.Command("bash", "/dev/stdin", s.format, s.url, s.dir, no_playlist) //ytdlp.sh cmds
 
 	c.Stdin = strings.NewReader(script)
 	c.Stderr = os.Stderr
 
-	b, e := c.Output()
+	_, e := c.Output()
 	if e != nil {
 		fmt.Println(e)
 	}
-	fmt.Println(string(b))
-	data.MoveJson() // move json after every download
+
+	data.MoveJsonAndImageFiles() // move json and imgs after every download
 }
 
-// will probably remove wav since i cant embed the thumnail with ydlp
 func Wav_NoPlaylist(url string) SongDownload {
 	return SongDownload{
 		format:   "wav",
 		url:      url,
 		dir:      "",
 		playlist: false,
-	}
-}
-
-func Mp3_NoPlaylist(url string) SongDownload {
-	return SongDownload{
-		format:   "mp3",
-		url:      url,
-		dir:      "",
-		playlist: false,
-	}
-}
-
-func Flac_Playlist(url, dir string) SongDownload {
-	return SongDownload{
-		format:   "flac",
-		url:      url,
-		dir:      dir,
-		playlist: true,
 	}
 }

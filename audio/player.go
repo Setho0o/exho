@@ -1,8 +1,10 @@
 package audio
 
 import (
-	"github.com/ebitengine/oto/v3"
+	"fmt"
 	"time"
+
+	"github.com/ebitengine/oto/v3"
 )
 
 type Player struct {
@@ -35,6 +37,7 @@ func (p *Player) Play(song string) {
 	p.player.Play()
 
 	for p.player.IsPlaying() {
+		fmt.Println(p.player.BufferedSize())
 		p.CheckSignals()
 		time.Sleep(time.Millisecond)
 	}
