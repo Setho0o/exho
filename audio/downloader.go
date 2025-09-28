@@ -2,10 +2,11 @@ package audio
 
 import (
 	_ "embed"
-	"fmt"
+	"log"
 	"os"
 	"os/exec"
 	"strings"
+
 	"github.com/Setho0o/exho/audio/data"
 )
 
@@ -18,10 +19,6 @@ type SongDownload struct {
 	dir      string
 	playlist bool
 }
-
-const SampleLifeLivingYou string = "https://www.youtube.com/watch?v=SwW5QGEBHDo&list=RDSwW5QGEBHDo"
-const SampleSwimmingPools string = "https://www.youtube.com/watch?v=B5YNiCfWC3A&list=RDB5YNiCfWC3A"
-const SampleEverLong string = "https://www.youtube.com/watch?v=eBG7P-K-r1Y&list=RDeBG7P-K-r1Y&start_radio=1"
 
 func Download(s SongDownload) {
 	var no_playlist string
@@ -36,7 +33,7 @@ func Download(s SongDownload) {
 
 	_, e := c.Output()
 	if e != nil {
-		fmt.Println(e)
+		log.Fatal(e)
 	}
 
 	data.MoveJsonAndImageFiles() // move json and imgs after every download
@@ -48,5 +45,13 @@ func Wav_NoPlaylist(url string) SongDownload {
 		url:      url,
 		dir:      "",
 		playlist: false,
+	}
+}
+func Wav_Playlist(url string) SongDownload {
+	return SongDownload{
+		format:   "wav",
+		url:      url,
+		dir:      "",
+		playlist: true,
 	}
 }

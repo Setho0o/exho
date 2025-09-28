@@ -13,6 +13,7 @@ const (
 )
 
 // ytdlp will put the json and img files in the same dir as the audio files so just moving them here
+// Could move a lot of the directory reading into a function but for now it works
 func MoveJsonAndImageFiles() {
 	dir, err := os.ReadDir(MusicDir)
 	if err != nil {
@@ -61,5 +62,50 @@ func GetAllImgs() []string {
 	}
 	return ImgFiles
 }
-func ClearAllData() {
+func ClearDataDirs() {
+	jDir, err := os.ReadDir(JsonDir)
+	if err != nil {
+		log.Fatal("json directory not found")
+	}
+	for _, e := range jDir {
+		if !e.IsDir() {
+			err := os.Remove(JsonDir + e.Name())
+			if err != nil {
+				log.Fatal("failed to remove "+JsonDir+e.Name()+": ", err)
+			}
+		}
+	}
+	iDir, err := os.ReadDir(ImgDir)
+	if err != nil {
+		log.Fatal("Img directory not found")
+	}
+	for _, e := range iDir {
+		if !e.IsDir() {
+			err := os.Remove(ImgDir + e.Name())
+			if err != nil {
+				log.Fatal("failed to remove "+ImgDir+e.Name()+": ", err)
+			}
+		}
+	}
+}
+
+func ClearMusicDir() {
+	mDir, err := os.ReadDir(MusicDir)
+	if err != nil {
+		log.Fatal("json directory not found")
+	}
+	for _, e := range mDir {
+		if !e.IsDir() {
+			err := os.Remove(MusicDir + e.Name())
+			if err != nil {
+				log.Fatal("failed to remove "+MusicDir+e.Name()+": ", err)
+			}
+		}
+	}
+}
+
+func ClearAllExit() {
+	ClearDataDirs()
+	ClearMusicDir()
+	os.Exit(0)
 }

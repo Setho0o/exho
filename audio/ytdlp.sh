@@ -26,5 +26,10 @@ yt-dlp \
   -o "%(title)s"\
   --write-thumbnail --convert-thumbnails png \
   --embed-metadata --merge-output-format mkv --write-info-json \
+  --extractor-args "youtube:player-client=default,-tv_simply" \
   -x --audio-format $1 $4 $2 
 
+# the extractor-args are a yt workaround ytdlp should fix it in the future 
+: '
+yt-dlp -P "music/json" --parse-metadata "description:(?s)(?P<meta_comment>.+)" --parse-metadata "%(webpage_url)s:%(url)s" --parse-metadata "%(like_count)s:%(meta_likes)s" --parse-metadata "%(view_count)s:%(meta_view)s" --parse-metadata "%(average_rating)s:%(rating)s" --parse-metadata "video::(?P<formats>)" --replace-in-metadata "title,uploader" "[ -]" "_" -o "%(title)s" --write-thumbnail --convert-thumbnails png --embed-metadata --merge-output-format mkv --write-info-json --extractor-args "youtube:player-client=default,-tv_simply" -x --audio-format 
+'
