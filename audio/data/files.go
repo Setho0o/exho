@@ -4,6 +4,7 @@ import (
 	"log"
 	"os"
 	"path"
+	"strings"
 )
 
 const (
@@ -62,6 +63,22 @@ func GetAllImgs() []string {
 	}
 	return ImgFiles
 }
+
+func GetAllMusicExt() map[string]string {
+	dir, err := os.ReadDir(MusicDir)
+	if err != nil {
+		log.Fatal("img directory not found")
+	}
+	ext := map[string]string{}
+	for _, e := range dir {
+		if !e.IsDir() {
+			name := strings.TrimSuffix(e.Name(), path.Ext(e.Name()))
+			ext[name] = path.Ext(e.Name())
+		}
+	}
+	return ext
+}
+
 func ClearDataDirs() {
 	jDir, err := os.ReadDir(JsonDir)
 	if err != nil {

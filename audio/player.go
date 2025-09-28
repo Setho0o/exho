@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"time"
 
+	"github.com/Setho0o/exho/audio/data"
 	"github.com/ebitengine/oto/v3"
 )
 
@@ -33,7 +34,7 @@ func PlayerInit(ch chan Signal) Player {
 }
 
 func (p *Player) Play(song string) {
-	p.player = p.ctx.NewPlayer(Decode(song))
+	p.player = p.ctx.NewPlayer(data.Decode(song))
 	p.player.Play()
 
 	for p.player.IsPlaying() {

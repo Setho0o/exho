@@ -1,13 +1,15 @@
 package main
 
-import "github.com/Setho0o/exho/audio/data"
+import (
+	"github.com/Setho0o/exho/audio/data"
+	"github.com/Setho0o/exho/ui"
+)
+
+
 
 func main() {
-	data.ClearAllExit()
-	//	s := data.DecodeJson()
-	//	fmt.Println(s)
-	//	audio.Download(audio.Wav_NoPlaylist(audio.SampleSwimmingPools))
-
+	d := data.Data{}
+	ui.Gio(d)
 	/*
 		ch := make(chan audio.Signal)
 		p := audio.PlayerInit(ch)

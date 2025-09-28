@@ -1,33 +1,33 @@
 package ui
 
 import (
-	"fmt"
 	"image"
 	"image/color"
 	"log"
 	"os"
 
 	"gioui.org/app"
-	"gioui.org/f32"
+	"gioui.org/layout"
 	"gioui.org/op"
 	"gioui.org/op/clip"
 	"gioui.org/op/paint"
 	"gioui.org/unit"
+	"github.com/Setho0o/exho/audio/data"
 )
 
-func Gio(wave []int) {
-	go func(wave []int) {
+func Gio(d data.Data) {
+	go func(d data.Data) {
 		window := new(app.Window)
-		err := run(window, wave)
+		err := run(window, d)
 		if err != nil {
 			log.Fatal(err)
 		}
 		os.Exit(0)
-	}(wave)
+	}(d)
 	app.Main()
 }
 
-func run(window *app.Window, wave []int) error {
+func run(window *app.Window, d data.Data) error {
 	var ops op.Ops
 	for {
 		switch e := window.Event().(type) {
@@ -35,34 +35,34 @@ func run(window *app.Window, wave []int) error {
 			return e.Err
 		case app.FrameEvent:
 			gtx := app.NewContext(&ops, e) //graphics ctx for rendering state
+
+			Flex(gtx)
+
 			//wave(&ops)
-			WaveForm(&ops, wave)
+			//	WaveForm(&ops, wave)
 			// Pass the drawing operations to the GPU.
 			e.Frame(gtx.Ops)
 		}
 	}
 }
 
-func Line(ops *op.Ops, offset, val float32) {
-	var c clip.Path
-	c.Begin(ops)
-	c.MoveTo(f32.Pt(500+offset, 810))
-	p1 := f32.Pt(500+offset, 810+val)
-	c.LineTo(p1)
-	c.Close()
-
-	paint.FillShape(ops, color.NRGBA{R: 0x80, A: 0xFF}, clip.Stroke{
-		Path:  c.End(),
-		Width: 3,
-	}.Op())
+func Flex(gtx layout.Context) layout.Dimensions {
+	return layout.Flex{}.Layout(gtx, // left side bar
+		layout.Rigid(func(gtx layout.Context) layout.Dimensions {
+			return ColorBox(gtx, image.Pt(IntDp(200), gtx.Constraints.Max.Y), red)
+		}),
+		layout.Flexed(0.5, func(gtx layout.Context) layout.Dimensions { // main scene
+			return ColorBox(gtx, gtx.Constraints.Min, blue)
+		}),
+	)
+}
+func ColorBox(gtx layout.Context, size image.Point, color color.NRGBA) layout.Dimensions {
+	defer clip.Rect{Max: size}.Push(gtx.Ops).Pop()
+	paint.ColorOp{Color: color}.Add(gtx.Ops)
+	paint.PaintOp{}.Add(gtx.Ops)
+	return layout.Dimensions{Size: size}
 }
 
-func WaveForm(ops *op.Ops, wave []int) {
-	fmt.Print("i")
-	for i, e := range wave {
-		Line(ops, float32(i+3), float32(e))
-	}
-}
 func drawRedRect(ops *op.Ops, p1, p2 image.Point) {
 	defer clip.Rect{
 		Min: p1,

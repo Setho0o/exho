@@ -1,4 +1,4 @@
-package audio
+package data
 
 import (
 	"bytes"
@@ -9,7 +9,7 @@ import (
 func GetWave(song string) []int {
 	x, err := GetBytes(song)
 	if err != nil {
-		log.Fatal(err)
+		log.Fatal("failed to decode song for wavform: ",err)
 	}
 
 	w := wav.NewDecoder(bytes.NewReader(x))
