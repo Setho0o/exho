@@ -6,8 +6,6 @@ require (
 	gioui.org v0.8.0
 	github.com/ebitengine/oto/v3 v3.3.3
 	github.com/go-audio/wav v1.1.0
-	github.com/go-flac/go-flac/v2 v2.0.4
-	github.com/hajimehoshi/go-mp3 v0.3.4
 	github.com/youpy/go-wav v0.3.2
 )
 
