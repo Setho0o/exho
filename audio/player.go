@@ -1,17 +1,20 @@
 package audio
 
 import (
-	"fmt"
+	"io"
+	"log"
+	"os"
 	"time"
 
 	"github.com/Setho0o/exho/audio/data"
 	"github.com/ebitengine/oto/v3"
+	"github.com/youpy/go-wav"
 )
 
 type Player struct {
-	ctx    *oto.Context
-	player *oto.Player
-	ch     <-chan Signal
+	Ctx    *oto.Context
+	Player *oto.Player
+	Ch     <-chan Signal
 }
 
 func PlayerInit(ch chan Signal) Player {
@@ -27,24 +30,48 @@ func PlayerInit(ch chan Signal) Player {
 	<-readyChan
 
 	return Player{
-		ctx:    otoCtx,
-		player: nil,
-		ch:     ch,
+		Ctx:    otoCtx,
+		Player: nil,
+		Ch:     ch,
 	}
 }
 
-func (p *Player) Play(song string) {
-	p.player = p.ctx.NewPlayer(data.Decode(song))
-	p.player.Play()
+func Play(d data.Data) {
+	ch := make(chan Signal)
+	p := PlayerInit(ch)
 
-	for p.player.IsPlaying() {
-		fmt.Println(p.player.BufferedSize())
+	file, err := os.Open(data.MusicDir + d.GetSong()) //this file needs to stay open untill the song is done since were streaming to save mem
+
+	decodedFile := Decode(file, d)
+	wav.NewReader(file)
+
+	p.Player = p.Ctx.NewPlayer(decodedFile)
+	p.Player.Play()
+
+	for p.Player.IsPlaying() {
 		p.CheckSignals()
-		time.Sleep(time.Millisecond)
+		time.Sleep(time.Millisecond * 1)
 	}
 
-	err := p.player.Close()
+	err = file.Close()
+	if err != nil {
+		log.Fatal("failed close song", err)
+	}
+
+	err = p.Player.Close()
 	if err != nil {
 		panic("player.Close failed: " + err.Error())
 	}
+}
+
+// im planning on add more than just wav for audio extentions, but for now its easier to just stick with it since making a waveform is a pain in the ass
+func Decode(file *os.File, d data.Data) io.Reader {
+	switch d.GetExt() {
+	case ".wav":
+		return wav.NewReader(file)
+	default:
+		log.Fatal("no extention: ", d)
+
+	}
+	return nil
 }

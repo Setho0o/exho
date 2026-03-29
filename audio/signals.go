@@ -19,7 +19,7 @@ const (
 
 func (p *Player) CheckSignals() {
 	select {
-	case x := <-p.ch:
+	case x := <-p.Ch:
 		switch x {
 		case Skip:
 			p.Skip()
@@ -47,11 +47,11 @@ func (p *Player) Pause() {
 func (p *Player) Previous() {
 }
 func (p *Player) VolUp() {
-	p.player.SetVolume(p.player.Volume() + .1)
+	p.Player.SetVolume(p.Player.Volume() + .1)
 }
 
 func (p *Player) VolDown() {
-	p.player.SetVolume(p.player.Volume() - .1)
+	p.Player.SetVolume(p.Player.Volume() - .1)
 	fmt.Println("voldown")
 }
 

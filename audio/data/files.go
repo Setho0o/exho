@@ -1,10 +1,10 @@
 package data
 
 import (
+	"fmt"
 	"log"
 	"os"
 	"path"
-	"strings"
 )
 
 const (
@@ -13,7 +13,7 @@ const (
 	ImgDir   string = "audio/data/img/"
 )
 
-// ytdlp will put the json and img files in the same dir as the audio files so just moving them here
+// ytdlp will all json and img files in the same dir as the audio files, so just moving them to designated dirs
 // Could move a lot of the directory reading into a function but for now it works
 func MoveJsonAndImageFiles() {
 	dir, err := os.ReadDir(MusicDir)
@@ -64,22 +64,7 @@ func GetAllImgs() []string {
 	return ImgFiles
 }
 
-func GetAllMusicExt() map[string]string {
-	dir, err := os.ReadDir(MusicDir)
-	if err != nil {
-		log.Fatal("img directory not found")
-	}
-	ext := map[string]string{}
-	for _, e := range dir {
-		if !e.IsDir() {
-			name := strings.TrimSuffix(e.Name(), path.Ext(e.Name()))
-			ext[name] = path.Ext(e.Name())
-		}
-	}
-	return ext
-}
-
-func ClearDataDirs() {
+func ClearDataDirs() { // clears audio/data/json & audio/data/img
 	jDir, err := os.ReadDir(JsonDir)
 	if err != nil {
 		log.Fatal("json directory not found")
@@ -106,10 +91,10 @@ func ClearDataDirs() {
 	}
 }
 
-func ClearMusicDir() {
+func ClearMusicDir() { // clears music/
 	mDir, err := os.ReadDir(MusicDir)
 	if err != nil {
-		log.Fatal("json directory not found")
+		log.Fatal("Music directory not found")
 	}
 	for _, e := range mDir {
 		if !e.IsDir() {
@@ -125,4 +110,13 @@ func ClearAllExit() {
 	ClearDataDirs()
 	ClearMusicDir()
 	os.Exit(0)
+}
+
+func GetBytes(path string) ([]byte, error) {
+	path = MusicDir + path
+	fileBytes, err := os.ReadFile(path)
+	if err != nil {
+		return nil, fmt.Errorf("failed reading file at: "+path, err)
+	}
+	return fileBytes, nil
 }
