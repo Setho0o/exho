@@ -1,19 +1,17 @@
 package main
 
 import (
-	"github.com/Setho0o/exho/audio"
+	//"fmt"
+
 	"github.com/Setho0o/exho/audio/data"
+	"github.com/Setho0o/exho/ui"
 )
 
 func main() {
-	//	audio.Download(audio.Wav_NoPlaylist("https://www.youtube.com/watch?v=Aibxit_PpAg"))
-	d := data.InitData()
-	audio.Play(d)
-	/*
-		d := data.InitData()
-		ch := make(chan audio.Signal)
-		p := audio.PlayerInit(ch)
 
-		p.Play(d.GetSong())
-	*/
+	//	audio.Download(audio.Wav_NoPlaylist("https://www.youtube.com/watch?v=9g-TWUn_LM4&list=RD9g-TWUn_LM4&start_radio=1"))
+	//	d := data.InitData()
+	d := data.Data{}
+	//fmt.Println(d)
+	ui.Gio(&d)
 }
